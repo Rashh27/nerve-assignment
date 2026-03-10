@@ -1,65 +1,106 @@
-import Image from "next/image";
+'use client';
+
+import { useMemo, useState, useRef, useEffect } from 'react';
+import { dateArray, strategyArray, type DateKey, type ViewType } from './data';
+
+const VIEWS = ['Bullish', 'Bearish', 'Rangebound', 'Volatile'] as const;
+
+function formatDateLabel(date: string) {
+  const [day, month, year] = date.split('-');
+  return `${day} ${month} ${year}`;
+}
 
 export default function Home() {
+  const [selectedView, setSelectedView] = useState<ViewType>('Bearish');
+  const [selectedDate, setSelectedDate] = useState<DateKey>('24-Apr-2024');
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!dropdownRef.current?.contains(e.target as Node)) setIsOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const strategies = useMemo(() => {
+    const viewObj = strategyArray.find((item) => item.View === selectedView);
+    const list = viewObj?.Value[selectedDate] ?? [];
+    const map = new Map<string, number>();
+    for (const name of list) map.set(name, (map.get(name) ?? 0) + 1);
+    return Array.from(map.entries()).map(([name, count]) => ({ name, count }));
+  }, [selectedView, selectedDate]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main className="min-h-screen flex items-center justify-center p-6 bg-[#f8fafc]">
+      <div className="w-full max-w-100 space-y-4">
+
+        {/* View toggle */}
+        <div className="rounded-full bg-white p-1.5 flex shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
+          {VIEWS.map((view) => (
+            <button
+              key={view}
+              onClick={() => setSelectedView(view as ViewType)}
+              className={`flex-1 py-2.5 px-3 text-xs font-medium rounded-full transition-all
+                ${selectedView === view
+                  ? 'bg-[#2563eb] text-white shadow-[0_4px_12px_rgba(37,99,235,0.4)]'
+                  : 'text-[#64748b] hover:text-[#1e293b]'
+                }`}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              {view}
+            </button>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Date dropdown */}
+        <div ref={dropdownRef}>
+          <button
+            onClick={() => setIsOpen((prev) => !prev)}
+            className="w-full bg-white text-sm font-medium text-[#1f2933] px-4 py-3.5 flex items-center justify-between rounded-2xl border border-[#e2e8f0] shadow-[0_1px_3px_rgba(0,0,0,0.1)] outline-none focus:ring-2 focus:ring-[#2563eb] focus:border-transparent transition-all"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <span>{formatDateLabel(selectedDate)}</span>
+            <svg className={`w-4 h-4 text-[#94a3b8] transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {isOpen && (
+            <div className="w-full mt-2 space-y-2">
+              {dateArray.map((date) => (
+                <button
+                  key={date}
+                  onClick={() => { setSelectedDate(date as DateKey); setIsOpen(false); }}
+                  className={`w-full text-left px-4 py-3.5 text-sm font-medium rounded-2xl border transition-colors bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08)]
+                    ${date === selectedDate
+                      ? 'border-[#2563eb] text-[#2563eb]'
+                      : 'border-[#e2e8f0] text-[#1f2933] hover:bg-[#f8fafc]'
+                    }`}
+                >
+                  {formatDateLabel(date)}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-      </main>
-    </div>
+
+        {/* Strategy cards */}
+        {strategies.length > 0 ? (
+          <div className="space-y-2.5">
+            {strategies.map(({ name, count }) => (
+              <div key={name} className="bg-white rounded-2xl px-4 py-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-[#e2e8f0] flex items-center justify-between">
+                <span className="text-sm font-semibold text-[#1f2937]">{name}</span>
+                <span className="text-xs text-[#94a3b8] font-medium">• {count} {count === 1 ? 'Strategy' : 'Strategies'}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl bg-white px-6 py-12 shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-dashed border-[#cbd5e1] text-center">
+            <p className="text-sm text-[#64748b]">No strategies available for <span className="font-semibold">{formatDateLabel(selectedDate)}</span>.</p>
+          </div>
+        )}
+
+      </div>
+    </main>
   );
 }
