@@ -7,7 +7,7 @@ export const dateArray = [
   '21-Jun-2024',
 ] as const;
 
-export type DateKey = (typeof dateArray)[number];
+export type DateKey = typeof dateArray[number];
 
 export type ViewType = 'Bullish' | 'Bearish' | 'RangeBound' | 'Volatile';
 

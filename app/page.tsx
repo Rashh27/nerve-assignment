@@ -56,7 +56,7 @@ export default function Home() {
         <div ref={dropdownRef}>
           <button
             onClick={() => setIsOpen((prev) => !prev)}
-            className="w-full bg-white text-sm font-medium text-gray-800 px-4 py-3.5 flex items-center justify-between rounded-2xl border border-gray-300 shadow-sm outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+            className="w-full bg-white text-sm font-bold text-gray-800 px-4 py-3.5 flex items-center justify-between rounded-2xl border border-gray-300 shadow-sm outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
           >
             <span>{formatDateLabel(selectedDate)}</span>
             <svg className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
