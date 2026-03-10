@@ -3,7 +3,7 @@
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { dateArray, strategyArray, type DateKey, type ViewType } from './data';
 
-const VIEWS = ['Bullish', 'Bearish', 'Rangebound', 'Volatile'] as const;
+const VIEWS = ['Bullish', 'Bearish', 'RangeBound', 'Volatile'] as const;
 
 function formatDateLabel(date: string) {
   const [day, month, year] = date.split('-');
@@ -34,9 +34,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
-      <div className="w-full max-w-100 space-y-4">
+      <div className="lg:w-full max-w-100 space-y-4">
 
-        <div className="rounded-2xl bg-white p-1.5 flex shadow-sm">
+        <div className="rounded-2xl bg-white p-1.5 flex shadow-sm ">
           {VIEWS.map((view) => (
             <button
               key={view}
