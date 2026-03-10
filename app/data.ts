@@ -1,4 +1,4 @@
-// app/data.ts
+
 export const dateArray = [
   '24-Apr-2024',
   '02-May-2024',

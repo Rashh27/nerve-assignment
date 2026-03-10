@@ -33,19 +33,18 @@ export default function Home() {
   }, [selectedView, selectedDate]);
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-6 bg-[#f8fafc]">
+    <main className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
       <div className="w-full max-w-100 space-y-4">
 
-        {/* View toggle */}
-        <div className="rounded-full bg-white p-1.5 flex shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
+        <div className="rounded-2xl bg-white p-1.5 flex shadow-sm">
           {VIEWS.map((view) => (
             <button
               key={view}
               onClick={() => setSelectedView(view as ViewType)}
-              className={`flex-1 py-2.5 px-3 text-xs font-medium rounded-full transition-all
+              className={`flex-1 py-2.5 px-3 text-xs  rounded-xl transition-all font-bold
                 ${selectedView === view
-                  ? 'bg-[#2563eb] text-white shadow-[0_4px_12px_rgba(37,99,235,0.4)]'
-                  : 'text-[#64748b] hover:text-[#1e293b]'
+                  ? 'bg-blue-600 text-white shadow-lg'
+                  : 'text-slate-500 hover:text-slate-800'
                 }`}
             >
               {view}
@@ -53,14 +52,14 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Date dropdown */}
+      
         <div ref={dropdownRef}>
           <button
             onClick={() => setIsOpen((prev) => !prev)}
-            className="w-full bg-white text-sm font-medium text-[#1f2933] px-4 py-3.5 flex items-center justify-between rounded-2xl border border-[#e2e8f0] shadow-[0_1px_3px_rgba(0,0,0,0.1)] outline-none focus:ring-2 focus:ring-[#2563eb] focus:border-transparent transition-all"
+            className="w-full bg-white text-sm font-medium text-gray-800 px-4 py-3.5 flex items-center justify-between rounded-2xl border border-gray-300 shadow-sm outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
           >
             <span>{formatDateLabel(selectedDate)}</span>
-            <svg className={`w-4 h-4 text-[#94a3b8] transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
@@ -71,10 +70,10 @@ export default function Home() {
                 <button
                   key={date}
                   onClick={() => { setSelectedDate(date as DateKey); setIsOpen(false); }}
-                  className={`w-full text-left px-4 py-3.5 text-sm font-medium rounded-2xl border transition-colors bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08)]
+                  className={`w-full text-left px-4 py-3.5 text-sm font-bold rounded-2xl border transition-colors bg-white shadow-sm
                     ${date === selectedDate
-                      ? 'border-[#2563eb] text-[#2563eb]'
-                      : 'border-[#e2e8f0] text-[#1f2933] hover:bg-[#f8fafc]'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-gray-300 text-gray-800 hover:bg-slate-50'
                     }`}
                 >
                   {formatDateLabel(date)}
@@ -84,19 +83,19 @@ export default function Home() {
           )}
         </div>
 
-        {/* Strategy cards */}
+      
         {strategies.length > 0 ? (
           <div className="space-y-2.5">
             {strategies.map(({ name, count }) => (
-              <div key={name} className="bg-white rounded-2xl px-4 py-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-[#e2e8f0] flex items-center justify-between">
-                <span className="text-sm font-semibold text-[#1f2937]">{name}</span>
-                <span className="text-xs text-[#94a3b8] font-medium">• {count} {count === 1 ? 'Strategy' : 'Strategies'}</span>
+              <div key={name} className="bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-gray-300 flex items-center justify-between">
+                <span className="text-sm font-semibold text-slate-800">{name}</span>
+                <span className="text-xs text-slate-400 font-medium">• {count} {count === 1 ? 'Strategy' : 'Strategies'}</span>
               </div>
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl bg-white px-6 py-12 shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-dashed border-[#cbd5e1] text-center">
-            <p className="text-sm text-[#64748b]">No strategies available for <span className="font-semibold">{formatDateLabel(selectedDate)}</span>.</p>
+          <div className="rounded-2xl bg-white px-6 py-12 shadow-sm border border-dashed border-slate-200 text-center">
+            <p className="text-sm text-slate-500">No strategies available for <span className="font-semibold">{formatDateLabel(selectedDate)}</span>.</p>
           </div>
         )}
 
